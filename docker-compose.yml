@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  app:
+    image: app:latest
+    container_name: app
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres_user:postgres_password@db:5432/mydatabase
+    depends_on:
+      - db
+    networks:
+      - group2
+
+  db:
+    image: postgres:latest
+    container_name:
