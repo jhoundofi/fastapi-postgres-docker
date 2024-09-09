@@ -2,10 +2,10 @@ version: '3.8'
 
 services:
   app:
-    image: app:latest
+    image: ${{ secrets.CONTAINER_REGISTRY_ENDPOINT }}/jcredodockercompose:latest
     container_name: app
     build:
-      context: ./app
+      context: ./app  # Construit l'image à partir du dossier app
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
@@ -17,5 +17,70 @@ services:
       - group2
 
   db:
-    image: postgres:latest
-    container_name:
+    image: postgres:latest  # Image officielle PostgreSQL de Docker Hub
+    container_name: db
+    environment:
+      POSTGRES_USER: postgres_user
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - group2
+
+networks:
+  group2:
+    driver: bridge
+
+volumes:
+  db-data:
+
+
+
+
+
+
+
+
+
+
+#version: '3.8'  # Version de Docker Compose utilisée
+
+#services:  # Définition des services
+# app:  # Nom du service pour l'application
+#   image: app:latest  # Image Docker à utiliser, tag 'latest'
+#  container_name: app  # Nom du conteneur dans Docker
+#    build:  # Instruction pour construire l'image de l'application
+#      context: ./app  # Construit l'image depuis le répertoire local "app"
+ #     dockerfile: Dockerfile  # Utilise le fichier Dockerfile pour la construction
+#    ports:
+#      - "8000:8000"  # Expose le port 8000 sur la machine hôte et dans le conteneur
+#    environment:  # Variables d'environnement pour configurer l'application
+#      - DATABASE_URL=postgresql://postgres_user:postgres_password@db:5432/mydatabase  # Connexion à la base de données PostgreSQL
+#    depends_on:  # Spécifie que le conteneur de l'application dépend du conteneur "db"
+#      - db
+#    networks:  # Réseau auquel appartient le conteneur de l'application
+#      - group2
+
+#  db:  # Nom du service pour la base de données PostgreSQL
+#    image: postgres:latest  # Image Docker PostgreSQL à utiliser, tag 'latest'
+#    container_name: db  # Nom du conteneur dans Docker
+#    environment:  # Variables d'environnement pour configurer PostgreSQL
+#      POSTGRES_USER: postgres_user  # Nom d'utilisateur de PostgreSQL
+#      POSTGRES_PASSWORD: postgres_password  # Mot de passe pour PostgreSQL
+#      POSTGRES_DB: mydatabase  # Nom de la base de données à créer
+#    ports:
+#      - "5432:5432"  # Expose le port 5432 pour PostgreSQL (par défaut)
+#    volumes:  # Volume pour la persistance des données PostgreSQL
+#      - db-data:/var/lib/postgresql/data  # Monte le volume "db-data" pour stocker les données de la base
+#    networks:  # Réseau auquel appartient le conteneur de la base de données
+#      - group2
+
+#networks:  # Définition des réseaux Docker
+#  group2:  # Nom du réseau
+#    driver: bridge  # Utilise le pilote de réseau 'bridge' (par défaut pour isoler les conteneurs)
+
+#volumes:  # Définition des volumes Docker
+#  db-data:  # Volume nommé pour persister les données de PostgreSQL
